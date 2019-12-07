@@ -5,7 +5,7 @@ from reaver.models.base.layers import Squeeze, Rescale, Transpose, RunningStatsN
 
 
 @gin.configurable
-def build_cnn_nature(obs_spec, act_spec, data_format='channels_first', value_separate=False, obs_shift=False, obs_scale=False):
+def build_cnn_nature(obs_spec, act_spec, data_format='channels_last', value_separate=False, obs_shift=False, obs_scale=False):
     conv_cfg = dict(padding='same', data_format=data_format, activation='relu')
     conv_spec = [(32, 8, 4), (64, 4, 2), (64, 3, 1)]
 

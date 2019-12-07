@@ -8,7 +8,7 @@ from reaver.models.base.layers import Squeeze, Split, Transpose, Log, Broadcast2
 
 
 @gin.configurable
-def build_fully_conv(obs_spec, act_spec, data_format='channels_first', broadcast_non_spatial=False, fc_dim=256):
+def build_fully_conv(obs_spec, act_spec, data_format='channels_last', broadcast_non_spatial=False, fc_dim=256):
     screen, screen_input = spatial_block('screen', obs_spec.spaces[0], conv_cfg(data_format, 'relu'))
     minimap, minimap_input = spatial_block('minimap', obs_spec.spaces[1], conv_cfg(data_format, 'relu'))
 
@@ -50,11 +50,16 @@ def build_fully_conv(obs_spec, act_spec, data_format='channels_first', broadcast
 
 def spatial_block(name, space, cfg):
     inpt = Input(space.shape, name=name + '_input')
-    block = Split(space.shape[0], axis=1)(inpt)
+    # block = Split(space.shape[0], axis=1)(inpt)
+
+    block = tf.keras.layers.Lambda(lambda x : tf.split(x, space.shape[0], axis=1))(inpt)
+
 
     for i, (name, dim) in enumerate(zip(space.spatial_feats, space.spatial_dims)):
         if dim > 1:
-            block[i] = Squeeze(axis=1)(block[i])
+            # block[i] = Squeeze(axis=1)(block[i])
+            block[i] = tf.keras.layers.Lambda(lambda x: tf.squeeze(x, axis=1))(block[i])
+
             # Embedding dim 10 as per https://arxiv.org/pdf/1806.01830.pdf
             block[i] = Embedding(input_dim=dim, output_dim=10)(block[i])
             # [N, H, W, C] -> [N, C, H, W]

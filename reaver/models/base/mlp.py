@@ -49,6 +49,7 @@ def build_logits(space, prev_layer, initializer):
 
 def build_fc(input_layer, layer_sizes, activation, initializer, prefix=''):
     x = input_layer
+
     for i, size in enumerate(layer_sizes):
         x = Dense(size, activation=activation, kernel_initializer=initializer, name='%sfc%02d' % (prefix, i+1))(x)
     return x

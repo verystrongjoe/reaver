@@ -3,8 +3,7 @@ from tensorflow.keras.layers import Lambda, Layer
 
 
 class RunningStatsNorm(Layer):
-    """
-    Normalizes inputs by running mean / std.dev statistics
+    """ Normalizes inputs by running mean / std.dev statistics
     """
     def __init__(self, and_shift=True, and_scale=False, **kwargs):
         self.and_shift, self.and_scale = and_shift, and_scale
@@ -29,12 +28,13 @@ class RunningStatsNorm(Layer):
     def _update_stats(self, x):
         ct = tf.maximum(1e-10, self._ct)
 
-        ct_b = tf.to_float(tf.shape(x)[0])
+        ct_b = tf.to_float(tf.shape(x)[0]) # batch size?
         mu_b, var_b = tf.nn.moments(x, axes=[0])
 
         delta = mu_b - self._mu
 
         new_ct = ct + ct_b
+
         new_mu = self._mu + delta * ct_b / new_ct
         new_var = (self._var * ct + var_b * ct_b + delta ** 2 * ct * ct_b / new_ct) / new_ct
 
@@ -64,7 +64,8 @@ class Variable(Layer):
         """
         repeat _var N times to match inputs dim and then concatenate them
         """
-        return tf.concat([inputs, tf.tile(self._var, (tf.shape(inputs)[0], 1))], axis=-1)
+        return tf.concat([
+            inputs, tf.tile(self._var, (tf.shape(inputs)[0], 1))], axis=-1)
 
 
 class Squeeze(Lambda):

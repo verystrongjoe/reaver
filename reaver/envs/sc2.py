@@ -41,6 +41,7 @@ class SC2Env(Env):
         # sensible action set for all minigames
         if not action_ids or action_ids in [ACTIONS_MINIGAMES, ACTIONS_MINIGAMES_ALL]:
             action_ids = [0, 1, 2, 3, 4, 6, 7, 12, 13, 42, 44, 50, 91, 183, 234, 309, 331, 332, 333, 334, 451, 452, 490]
+            # action_ids = [0, 1, 2, 3, 4, 6, 7, 12, 13, 42, 44, 50, 91, 183, 234, 309, 331, 332, 333, 451, 452, 490]
 
         # some additional actions for minigames (not necessary to solve)
         if action_ids == ACTIONS_MINIGAMES_ALL:
@@ -73,6 +74,7 @@ class SC2Env(Env):
         self._env = sc2_env.SC2Env(
             map_name=self.id,
             visualize=self.render,
+            players=[sc2_env.Agent(sc2_env.Race.terran)],
             agent_interface_format=[features.parse_agent_interface_format(
                 feature_screen=self.spatial_dim,
                 feature_minimap=self.spatial_dim,
@@ -151,9 +153,10 @@ class ObservationWrapper:
         ts = timestep[0]
         obs, reward, done = ts.observation, ts.reward, ts.step_type == StepType.LAST
 
+        # todo : check here
         obs_wrapped = [
-            obs['feature_screen'][self.feature_masks['screen']],
-            obs['feature_minimap'][self.feature_masks['minimap']]
+            [obs['feature_screen'][i] for i in self.feature_masks['screen']],
+            [obs['feature_minimap'][i] for i in self.feature_masks['minimap']]
         ]
         for feat_name in self.features['non-spatial']:
             if feat_name == 'available_actions':

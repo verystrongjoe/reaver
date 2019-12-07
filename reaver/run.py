@@ -1,3 +1,12 @@
+"""
+http://egloos.zum.com/mcchae/v/10546273
+
+https://jhui.github.io/2018/02/09/PyTorch-Variables-functionals-and-Autograd/
+
+https://towardsdatascience.com/keras-vs-pytorch-for-deep-learning-a013cb63870d
+https://towardsdatascience.com/converting-a-simple-deep-learning-model-from-pytorch-to-tensorflow-b6b353351f5d
+"""
+
 import os
 import gin
 import tensorflow as tf
