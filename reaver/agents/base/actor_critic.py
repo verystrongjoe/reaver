@@ -73,7 +73,9 @@ class ActorCriticAgent(MemoryAgent):
         self.normalize_advantages = normalize_advantages
 
         self.model = model_fn(obs_spec, act_spec)
+
         self.value = self.model.outputs[-1]
+
         self.policy = policy_cls(act_spec, self.model.outputs[:-1])
         self.loss_op, self.loss_terms, self.loss_inputs = self.loss_fn()
 
@@ -83,7 +85,6 @@ class ActorCriticAgent(MemoryAgent):
             grads, _ = tf.clip_by_global_norm(grads, clip_grads_norm, self.grads_norm)
         self.train_op = optimizer.apply_gradients(zip(grads, vars), global_step=sess_mgr.global_step)
         self.minimize_ops = self.make_minimize_ops()
-
         sess_mgr.restore_or_init()
         self.n_batches = sess_mgr.start_step
         self.start_step = sess_mgr.start_step * traj_len
@@ -91,6 +92,7 @@ class ActorCriticAgent(MemoryAgent):
         self.logger = Logger()
 
     def get_action_and_value(self, obs):
+        # todo : polilcy.,
         return self.sess_mgr.run([self.policy.sample, self.value], self.model.inputs, obs)
 
     def get_action(self, obs):

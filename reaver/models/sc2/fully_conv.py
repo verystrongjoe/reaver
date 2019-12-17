@@ -50,6 +50,7 @@ def build_fully_conv(obs_spec, act_spec, data_format='channels_first', broadcast
 
 def spatial_block(name, space, cfg):
     inpt = Input(space.shape, name=name + '_input')
+
     block = Split(space.shape[0], axis=1)(inpt)
 
     for i, (name, dim) in enumerate(zip(space.spatial_feats, space.spatial_dims)):

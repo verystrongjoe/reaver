@@ -10,7 +10,6 @@ from . import Env, Spec, Space
 
 ACTIONS_MINIGAMES, ACTIONS_MINIGAMES_ALL, ACTIONS_ALL = ['minigames', 'minigames_all', 'all']
 
-
 @gin.configurable
 class SC2Env(Env):
     """
